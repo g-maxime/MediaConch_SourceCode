@@ -25,5 +25,5 @@ freely, subject to the following restrictions:
 #include "tfsxml.h"
 
 namespace tfsxml {
-  #include "tfsxml.c"
+  #include "tfsxml_impl.c"
 }
