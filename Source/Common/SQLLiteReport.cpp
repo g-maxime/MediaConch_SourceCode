@@ -379,8 +379,9 @@ long SQLLiteReport::get_file_id(int user, const std::string& filename, const std
     create << "SELECT " << key << " FROM MEDIACONCH_FILE";
     create << " WHERE FILENAME = ?";
     create << " AND USER = ?";
-    create << " AND OPTIONS = ?";
-    if (file_last_modification.size())
+    if (!options.empty())
+        create << " AND OPTIONS = ?";
+    if (!file_last_modification.empty())
         create << " AND FILE_LAST_MODIFICATION = ?";
     create << ";";
     query = create.str();
@@ -402,16 +403,19 @@ long SQLLiteReport::get_file_id(int user, const std::string& filename, const std
         return -1;
     }
 
-    ret = sqlite3_bind_text(stmt, 3, options.c_str(), options.size(), SQLITE_STATIC);
-    if (ret != SQLITE_OK)
+    if (!options.empty())
     {
-        err = get_sqlite_error(ret);
-        return -1;
+        ret = sqlite3_bind_text(stmt, 3, options.c_str(), options.size(), SQLITE_STATIC);
+        if (ret != SQLITE_OK)
+        {
+            err = get_sqlite_error(ret);
+            return -1;
+        }
     }
 
-    if (file_last_modification.size())
+    if (!file_last_modification.empty())
     {
-        ret = sqlite3_bind_blob(stmt, 4, file_last_modification.c_str(), file_last_modification.length(), SQLITE_STATIC);
+        ret = sqlite3_bind_blob(stmt, options.empty() ? 3 : 4, file_last_modification.c_str(), file_last_modification.length(), SQLITE_STATIC);
         if (ret != SQLITE_OK)
         {
             err = get_sqlite_error(ret);
@@ -1133,7 +1137,9 @@ int SQLLiteReport::get_report(int user, long file_id, MediaConchLib::report repo
     create << "FILE_ID = ? ";
     create << "AND TOOL = ? ";
     create << "AND FORMAT = ?";
-    create << "AND OPTIONS = ?;";
+    if (!options.empty())
+        create << " AND OPTIONS = ?";
+    create << ";";
     query = create.str();
 
     if (prepare_v2(query, err) < 0)
@@ -1160,11 +1166,14 @@ int SQLLiteReport::get_report(int user, long file_id, MediaConchLib::report repo
         return -1;
     }
 
-    ret = sqlite3_bind_text(stmt, 4, options.c_str(), options.size(), SQLITE_STATIC);
-    if (ret != SQLITE_OK)
+    if (!options.empty())
     {
-        err = get_sqlite_error(ret);
-        return -1;
+        ret = sqlite3_bind_text(stmt, 4, options.c_str(), options.size(), SQLITE_STATIC);
+        if (ret != SQLITE_OK)
+        {
+            err = get_sqlite_error(ret);
+            return -1;
+        }
     }
 
     if (execute() < 0 || !reports.size())
@@ -1215,8 +1224,10 @@ int SQLLiteReport::report_is_registered(int user, long file_id, MediaConchLib::r
     create << "SELECT " << key << " FROM MEDIACONCH_REPORT WHERE ";
     create << "FILE_ID = ? ";
     create << "AND TOOL = ? ";
-    create << "AND FORMAT = ? ";
-    create << "AND OPTIONS = ?;";
+    create << "AND FORMAT = ?";
+    if (!options.empty())
+        create << " AND OPTIONS = ?";
+    create << ";";
     query = create.str();
 
     if (prepare_v2(query, err) < 0)
@@ -1243,11 +1254,14 @@ int SQLLiteReport::report_is_registered(int user, long file_id, MediaConchLib::r
         return -1;
     }
 
-    ret = sqlite3_bind_text(stmt, 4, options.c_str(), options.size(), SQLITE_STATIC);
-    if (ret != SQLITE_OK)
+    if (!options.empty())
     {
-        err = get_sqlite_error(ret);
-        return -1;
+        ret = sqlite3_bind_text(stmt, 4, options.c_str(), options.size(), SQLITE_STATIC);
+        if (ret != SQLITE_OK)
+        {
+            err = get_sqlite_error(ret);
+            return -1;
+        }
     }
 
     if (execute())
