@@ -124,7 +124,7 @@ namespace MediaConch {
 
         CS.Enter();
         if (!el->errored())
-            core->register_reports_to_database(el->user, el->file_id, MI);
+            core->register_reports_to_database(el->user, el->file_id, Core::serialize_string_from_options_vec(el->options), MI);
         else
         {
             std::string err;
@@ -302,7 +302,7 @@ namespace MediaConch {
         MediaConchLib::report report_kind = ((PluginFormat*)p)->get_report_kind();
 
         CS.Enter();
-        core->register_reports_to_database(el->user, el->file_id, report, report_kind, "", MI);
+        core->register_reports_to_database(el->user, el->file_id, report, report_kind, Core::serialize_string_from_options_vec(el->options), MI);
         remove_element(el);
         CS.Leave();
         run_element();

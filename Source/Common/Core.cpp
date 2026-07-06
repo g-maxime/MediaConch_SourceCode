@@ -829,7 +829,7 @@ void Core::register_report_xml_to_database(int user, long file, const std::strin
 }
 
 //---------------------------------------------------------------------------
-void Core::register_report_mediainfo_text_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* curMI)
+void Core::register_report_mediainfo_text_to_database(int user, long file, const std::string& options, MediaInfoNameSpace::MediaInfo* curMI)
 {
     curMI->Option(__T("Details"), __T("0"));
     curMI->Option(__T("Inform"), String());
@@ -841,12 +841,12 @@ void Core::register_report_mediainfo_text_to_database(int user, long file, Media
     std::string err;
     db_mutex.Enter();
     get_db()->save_report(user, file, MediaConchLib::report_MediaInfo, MediaConchLib::format_Text,
-                          "", report, mode, mil_version(), err);
+                          options, report, mode, mil_version(), err);
     db_mutex.Leave();
 }
 
 //---------------------------------------------------------------------------
-void Core::register_report_mediainfo_xml_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* curMI)
+void Core::register_report_mediainfo_xml_to_database(int user, long file, const std::string& options, MediaInfoNameSpace::MediaInfo* curMI)
 {
     curMI->Option(__T("Details"), __T("0"));
     curMI->Option(__T("Inform"), __T("MIXML"));
@@ -857,12 +857,12 @@ void Core::register_report_mediainfo_xml_to_database(int user, long file, MediaI
     std::string err;
     db_mutex.Enter();
     get_db()->save_report(user, file, MediaConchLib::report_MediaInfo, MediaConchLib::format_Xml,
-                          "", report, mode, mil_version(), err);
+                          options, report, mode, mil_version(), err);
     db_mutex.Leave();
 }
 
 //---------------------------------------------------------------------------
-void Core::register_report_micromediatrace_xml_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* curMI)
+void Core::register_report_micromediatrace_xml_to_database(int user, long file, const std::string& options, MediaInfoNameSpace::MediaInfo* curMI)
 {
     curMI->Option(__T("Details"), __T("1"));
     curMI->Option(__T("Inform"), __T("MICRO_XML"));
@@ -892,7 +892,7 @@ void Core::register_report_micromediatrace_xml_to_database(int user, long file, 
     std::string err;
     db_mutex.Enter();
     get_db()->save_report(user, file, MediaConchLib::report_MicroMediaTrace, MediaConchLib::format_Xml,
-                          "", report, mode, mil_version(), err);
+                          options, report, mode, mil_version(), err);
     db_mutex.Leave();
 }
 
@@ -914,29 +914,30 @@ void Core::register_reports_to_database(int user, long file, const std::string& 
     register_report_xml_to_database(user, file, report, report_kind, options);
 
     //MI and MT
-    register_reports_to_database(user, file, curMI);
+    register_reports_to_database(user, file, options, curMI);
 }
 
 //---------------------------------------------------------------------------
-void Core::register_reports_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* curMI)
+void Core::register_reports_to_database(int user, long file, const std::string& options,
+                                        MediaInfoNameSpace::MediaInfo* curMI)
 {
     // MediaInfo
-    register_report_mediainfo_text_to_database(user, file, curMI);
-    register_report_mediainfo_xml_to_database(user, file, curMI);
+    register_report_mediainfo_text_to_database(user, file, options, curMI);
+    register_report_mediainfo_xml_to_database(user, file, options, curMI);
 
     // MicroMediaTrace
-    register_report_micromediatrace_xml_to_database(user, file, curMI);
+    register_report_micromediatrace_xml_to_database(user, file, options, curMI);
 }
 
 //---------------------------------------------------------------------------
-void Core::register_reports_to_database(int user, long file)
+void Core::register_reports_to_database(int user, long file, const std::string& options)
 {
     // MediaInfo
-    register_report_mediainfo_text_to_database(user, file, MI);
-    register_report_mediainfo_xml_to_database(user, file, MI);
+    register_report_mediainfo_text_to_database(user, file, options, MI);
+    register_report_mediainfo_xml_to_database(user, file, options, MI);
 
     // MicroMediaTrace
-    register_report_micromediatrace_xml_to_database(user, file, MI);
+    register_report_micromediatrace_xml_to_database(user, file, options, MI);
 }
 
 //---------------------------------------------------------------------------

@@ -178,7 +178,8 @@ public:
     // Report Database access
     //***************************************************************************
     void set_file_analyzed_to_database(int user, long id);
-    void register_reports_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* MI);
+    void register_reports_to_database(int user, long file, const std::string& options,
+                                      MediaInfoNameSpace::MediaInfo* MI);
     void register_reports_to_database(int user, long file, const std::string& report,
                                       MediaConchLib::report report_kind, const std::string& options,
                                       MediaInfoNameSpace::MediaInfo* curMI);
@@ -245,12 +246,12 @@ private:
     std::string get_last_modification_file(const std::string& file);
     bool   file_is_existing(const std::string& filename);
 
-    void register_reports_to_database(int user, long file);
+    void register_reports_to_database(int user, long file, const std::string& options);
     void register_report_xml_to_database(int user, long file, const std::string& report,
                                          MediaConchLib::report report_kind, const std::string& options);
-    void register_report_mediainfo_text_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* MI);
-    void register_report_mediainfo_xml_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* MI);
-    void register_report_micromediatrace_xml_to_database(int user, long file, MediaInfoNameSpace::MediaInfo* MI);
+    void register_report_mediainfo_text_to_database(int user, long file, const std::string& options, MediaInfoNameSpace::MediaInfo* MI);
+    void register_report_mediainfo_xml_to_database(int user, long file,const std::string& options, MediaInfoNameSpace::MediaInfo* MI);
+    void register_report_micromediatrace_xml_to_database(int user, long file,const std::string& options, MediaInfoNameSpace::MediaInfo* MI);
 
     std::string get_config_file();
     std::string get_database_path();

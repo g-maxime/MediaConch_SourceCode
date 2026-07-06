@@ -1423,7 +1423,7 @@ int MainWindow::analyze(const std::vector<std::string>& files, bool with_fixer, 
 
     for (size_t i = 0; i + 1 < opt.size();)
     {
-        if (opt[i] != "File_TryToFix" && opt[i] != "file_parsespeed")
+        if (!(with_fixer && (opt[i] == "File_TryToFix" || opt[i] == "file_parsespeed")))
             options.push_back(std::make_pair(opt[i], opt[i + 1]));
         i += 2;
     }
